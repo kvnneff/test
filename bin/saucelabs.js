@@ -35,6 +35,7 @@ module.exports = function*(cmd, dt){
 
   // report
   dt.on('browser', function(browser){
+    var client = browser.client();
     var runner = browser.runner;
     var flush = buffer(runner);
 
@@ -46,6 +47,11 @@ module.exports = function*(cmd, dt){
     function end(done){
       return function(obj){
         failures += obj.failures;
+        if (failures == 0) {
+          client.sauceJobStatus('passed', function () {
+            done();
+          });
+        }
         done();
       };
     }
